@@ -23,13 +23,14 @@ public class PV229Similarity1 {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         SequentialScan engine = new SequentialScan();
         // TODO code application logic here
         Iterator<LocalAbstractObject> dataIterator = new StreamGenericAbstractObjectIterator<>(
             ObjectStringEditDist.class,
-            "\\J:\\text"
+            "\\C:\\Users\\msulc\\Dropbox\\1PROJEKTY\\PV229-Similarity\\sources\\text.txt"
         );
         
         BulkInsertOperation insertOper = new BulkInsertOperation(dataIterator);
