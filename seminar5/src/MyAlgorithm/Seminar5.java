@@ -12,7 +12,10 @@ import messif.objects.util.AggregationFunction;
 import messif.objects.util.RankedAbstractObject;
 import messif.objects.util.StreamGenericAbstractObjectIterator;
 import messif.operations.query.AggregationFunctionQueryOperation;
-import messif.operations.query.KNNQueryOperation;
+import messif.statistics.OperationStatistics;
+import messif.statistics.StatisticCounter;
+import messif.statistics.StatisticTimer;
+import messif.statistics.Statistics;
 
 /**
  *
@@ -28,16 +31,34 @@ public class Seminar5 {
                     MetaObjectMap.class, "C:\\Users\\msulc\\Dropbox\\1PROJEKTY\\seminar5\\metadata"
         ).next();
         
-        AggregationFunctionQueryOperation knnQuery = alg.executeOperation(
-                new AggregationFunctionQueryOperation(query, 10,
-                    AggregationFunction.valueOf("ColorStructureType + ScalableColorType")
-                    )
-        );
+        for (int i=0; i <4; i++) {
+            
+            OperationStatistics localStats = OperationStatistics.getLocalThreadStatistics();
+            localStats.registerBoundStat("DistanceComputations");
         
-        Iterator<RankedAbstractObject> answer = knnQuery.getAnswer();
-        while (answer.hasNext()) {
-            System.out.println(answer.next());
-        }
-    }
-    
+            AggregationFunctionQueryOperation knnQuery = alg.executeOperation(
+                    new AggregationFunctionQueryOperation(query, 10,
+                        AggregationFunction.valueOf("ColorStructureType + ScalableColorType")
+                        )
+            );
+
+
+
+            Iterator<RankedAbstractObject> answer = knnQuery.getAnswer();
+            while (answer.hasNext()) {
+                System.out.println(answer.next());
+            }
+
+
+            StatisticCounter distComp = StatisticCounter.getStatistics("DistanceComputations");
+            System.out.println(distComp);
+
+            Iterator<Statistics<?>> allStatistics = Statistics.getAllStatistics();
+            while (allStatistics.hasNext())
+                System.out.println(allStatistics.next());
+
+            System.out.println(localStats);
+            localStats.resetStatistics();
+        }    
+     }
 }
